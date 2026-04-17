@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Prescriptions{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-header-actions">
+        <div><h2>Prescriptions</h2><p>Manage patient prescriptions</p></div>
+        <a href="{% url 'prescription_create' %}" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            New Prescription
+        </a>
+    </div>
+</div>
+<div class="card">
+    {% if prescriptions %}
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Patient</th>
+                    <th>Medicines</th>
+                    <th>Record</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prescription in prescriptions %}
+                <tr>
+                    <td style="font-weight: 600; color: var(--text-primary);">{{ prescription.patient.full_name }}</td>
+                    <td><span class="badge badge-info">{{ prescription.medicines.count }} item{{ prescription.medicines.count|pluralize }}</span></td>
+                    <td>{{ prescription.medical_record.title|default:"—" }}</td>
+                    <td>{{ prescription.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'prescription_detail' prescription.pk %}" class="btn btn-sm btn-secondary">View</a>
+                            <a href="{% url 'prescription_delete' prescription.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        <h3>No Prescriptions</h3>
+        <p>Create your first prescription</p>
+        <a href="{% url 'prescription_create' %}" class="btn btn-primary">New Prescription</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

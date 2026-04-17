@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+<div class="page-header"><h2>My Patient Profile</h2><p>Your registered medical information</p></div>
+
+{% if patient %}
+<div class="card" style="max-width: 640px;">
+    <div class="profile-header">
+        <div class="profile-avatar">{{ patient.full_name|first|upper }}</div>
+        <div class="profile-info">
+            <h3>{{ patient.full_name }}</h3>
+            <p>{{ patient.get_gender_display }} · Registered {{ patient.created_at|date:"M d, Y" }}</p>
+        </div>
+    </div>
+    <dl class="detail-list">
+        <dt>Phone</dt>
+        <dd>{{ patient.phone|default:"Not provided" }}</dd>
+        <dt>Date of Birth</dt>
+        <dd>{{ patient.date_of_birth|default:"Not provided" }}</dd>
+        <dt>Address</dt>
+        <dd>{{ patient.address|default:"Not provided" }}</dd>
+    </dl>
+</div>
+{% else %}
+<div class="card">
+    <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <h3>No Patient Profile Found</h3>
+        <p>Your patient profile has not been created yet. Please contact your doctor.</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

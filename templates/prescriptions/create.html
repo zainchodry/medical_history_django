@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}New Prescription{% endblock %}
+{% block content %}
+<div class="page-header"><h2>New Prescription</h2><p>Create a prescription with medicines</p></div>
+<div class="card" style="max-width: 800px;">
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div style="background: var(--danger-bg); border: 1px solid rgba(239,68,68,0.2); border-radius: var(--radius-sm); padding: 12px 16px; margin-bottom: 18px;">
+            {% for error in form.non_field_errors %}<p style="color: var(--danger); font-size: 0.85rem; margin: 0;">{{ error }}</p>{% endfor %}
+        </div>
+        {% endif %}
+
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        {% endfor %}
+
+        <div style="margin-top: 28px; margin-bottom: 14px;">
+            <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 4px;">Medicines</h3>
+            <p style="font-size: 0.82rem; color: var(--text-muted);">Add one or more medicines to this prescription</p>
+        </div>
+
+        <div id="medicineContainer">
+            <div class="medicine-row">
+                <div class="medicine-grid">
+                    <div class="form-group">
+                        <label>Medicine Name</label>
+                        <input type="text" name="name" class="form-control" placeholder="e.g. Amoxicillin" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Dosage</label>
+                        <input type="text" name="dosage" class="form-control" placeholder="e.g. 500mg" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Frequency</label>
+                        <input type="text" name="frequency" class="form-control" placeholder="e.g. Twice a day" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Duration</label>
+                        <input type="text" name="duration" class="form-control" placeholder="e.g. 5 days" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" class="add-medicine-btn" onclick="addMedicine()" style="margin-bottom: 24px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Another Medicine
+        </button>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Save Prescription</button>
+            <a href="{% url 'prescription_list' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+function addMedicine() {
+    const container = document.getElementById('medicineContainer');
+    const row = document.createElement('div');
+    row.className = 'medicine-row';
+    row.innerHTML = `
+        <div class="medicine-grid">
+            <div class="form-group">
+                <label>Medicine Name</label>
+                <input type="text" name="name" class="form-control" placeholder="e.g. Amoxicillin" required>
+            </div>
+            <div class="form-group">
+                <label>Dosage</label>
+                <input type="text" name="dosage" class="form-control" placeholder="e.g. 500mg" required>
+            </div>
+            <div class="form-group">
+                <label>Frequency</label>
+                <input type="text" name="frequency" class="form-control" placeholder="e.g. Twice a day" required>
+            </div>
+            <div class="form-group">
+                <label>Duration</label>
+                <input type="text" name="duration" class="form-control" placeholder="e.g. 5 days" required>
+            </div>
+        </div>
+    `;
+    container.appendChild(row);
+}
+</script>
+{% endblock %}

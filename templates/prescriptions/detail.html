@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Prescription for {{ prescription.patient.full_name }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-header-actions">
+        <div>
+            <h2>Prescription Details</h2>
+            <p>{{ prescription.patient.full_name }} · {{ prescription.created_at|date:"M d, Y" }}</p>
+        </div>
+        <a href="{% url 'prescription_list' %}" class="btn btn-secondary">← Back to Prescriptions</a>
+    </div>
+</div>
+
+<div style="max-width: 800px;">
+    <div class="card" style="margin-bottom: 20px;">
+        <dl class="detail-list">
+            <dt>Patient</dt>
+            <dd>{{ prescription.patient.full_name }}</dd>
+            {% if prescription.medical_record %}
+            <dt>Linked Record</dt>
+            <dd><a href="{% url 'record_detail' prescription.medical_record.pk %}">{{ prescription.medical_record.title }}</a></dd>
+            {% endif %}
+            {% if prescription.notes %}
+            <dt>Notes</dt>
+            <dd>{{ prescription.notes }}</dd>
+            {% endif %}
+        </dl>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>Medicines ({{ prescription.medicines.count }})</h3>
+        </div>
+
+        {% if prescription.medicines.all %}
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Medicine</th>
+                        <th>Dosage</th>
+                        <th>Frequency</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for med in prescription.medicines.all %}
+                    <tr>
+                        <td style="font-weight: 600; color: var(--text-primary);">{{ med.name }}</td>
+                        <td><span class="badge badge-accent">{{ med.dosage }}</span></td>
+                        <td>{{ med.frequency }}</td>
+                        <td>{{ med.duration }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="color: var(--text-muted); padding: 16px 0;">No medicines added.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Medical Records{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-header-actions">
+        <div><h2>Medical Records</h2><p>Patient medical history timeline</p></div>
+        <a href="{% url 'record_create' %}" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            New Record
+        </a>
+    </div>
+</div>
+<div class="card">
+    {% if records %}
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Patient</th>
+                    <th>Type</th>
+                    <th>Visit Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td><a href="{% url 'record_detail' record.pk %}" style="font-weight: 600; color: var(--accent-light);">{{ record.title }}</a></td>
+                    <td>{{ record.patient.full_name }}</td>
+                    <td><span class="badge badge-accent">{{ record.get_record_type_display }}</span></td>
+                    <td>{{ record.visit_date|date:"M d, Y" }}</td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'record_detail' record.pk %}" class="btn btn-sm btn-secondary">View</a>
+                            <a href="{% url 'record_delete' record.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <h3>No Medical Records</h3>
+        <p>Create your first medical record to get started</p>
+        <a href="{% url 'record_create' %}" class="btn btn-primary">New Record</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

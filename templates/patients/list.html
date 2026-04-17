@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}Patients{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-header-actions">
+        <div>
+            <h2>Patients</h2>
+            <p>Manage your patient records</p>
+        </div>
+        <a href="{% url 'patient_create' %}" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Patient
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    {% if patients %}
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>Date of Birth</th>
+                    <th>Phone</th>
+                    <th>Registered</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for patient in patients %}
+                <tr>
+                    <td style="font-weight: 600; color: var(--text-primary);">{{ patient.full_name }}</td>
+                    <td><span class="badge badge-info">{{ patient.get_gender_display }}</span></td>
+                    <td>{{ patient.date_of_birth|default:"—" }}</td>
+                    <td>{{ patient.phone|default:"—" }}</td>
+                    <td>{{ patient.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'patient_update' patient.pk %}" class="btn btn-sm btn-secondary">Edit</a>
+                            <a href="{% url 'patient_delete' patient.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        <h3>No Patients Yet</h3>
+        <p>Add your first patient to get started</p>
+        <a href="{% url 'patient_create' %}" class="btn btn-primary">Add Patient</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}{{ record.title }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-header-actions">
+        <div>
+            <h2>{{ record.title }}</h2>
+            <p>{{ record.patient.full_name }} · {{ record.visit_date|date:"M d, Y" }}</p>
+        </div>
+        <a href="{% url 'record_list' %}" class="btn btn-secondary">← Back to Records</a>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 900px;">
+    <div class="card" style="grid-column: 1 / -1;">
+        <dl class="detail-list">
+            <dt>Record Type</dt>
+            <dd><span class="badge badge-accent">{{ record.get_record_type_display }}</span></dd>
+            <dt>Diagnosis</dt>
+            <dd>{{ record.diagnosis|default:"No diagnosis recorded" }}</dd>
+            <dt>Treatment</dt>
+            <dd>{{ record.treatment|default:"No treatment recorded" }}</dd>
+            <dt>Notes</dt>
+            <dd>{{ record.notes|default:"No additional notes" }}</dd>
+        </dl>
+    </div>
+
+    <!-- Attachments Section -->
+    <div class="card" style="grid-column: 1 / -1;">
+        <div class="card-header">
+            <h3>Attachments</h3>
+        </div>
+
+        {% if record.attachments.all %}
+        <ul style="list-style: none; padding: 0;">
+            {% for attachment in record.attachments.all %}
+            <li style="padding: 10px 0; border-bottom: 1px solid var(--border-color);">
+                <a href="{{ attachment.file.url }}" target="_blank" style="font-weight: 500;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 6px;"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+                    {{ attachment.file.name }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p style="color: var(--text-muted); font-size: 0.88rem;">No attachments yet.</p>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Upload Attachment</label>
+                {{ form.file }}
+            </div>
+            <button type="submit" class="btn btn-sm btn-primary">Upload</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
