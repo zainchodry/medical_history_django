@@ -21,7 +21,9 @@ def record_create(request):
     form = MedicalRecordForm(request.POST or None)
 
     # Only show doctor's patients
-    form.fields['patient'].queryset = Patient.objects.all()
+    form.fields['patient'].queryset = Patient.objects.filter(
+    appointment__doctor=request.user
+    ).distinct()
 
     if form.is_valid():
         record = form.save(commit=False)
